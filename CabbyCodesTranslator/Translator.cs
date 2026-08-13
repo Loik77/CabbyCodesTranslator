@@ -1,6 +1,9 @@
 using dnlib.DotNet;
 using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Reflection;
+using System.Text.Json;
 using System.Text.RegularExpressions;
 
 namespace CabbyCodesTranslator;
@@ -9,28 +12,22 @@ public readonly record struct TranslationResult(int Scanned, int Replaced);
 
 public static class Translator
 {
-    private static readonly Dictionary<string, string> Map = new(StringComparer.Ordinal)
-    {
-        ["Cabby Codes"] = "Cabby 代码",
-        ["Code"] = "代码",
-        ["Codes"] = "代码",
-        ["Menu"] = "菜单",
-        ["Settings"] = "设置",
-        ["Save"] = "保存",
-        ["Load"] = "读取",
-        ["Cancel"] = "取消",
-        ["Confirm"] = "确认",
-        ["Back"] = "返回",
-        ["Close"] = "关闭",
-        ["Enabled"] = "启用",
-        ["Disabled"] = "禁用"
-    };
+    private static readonly Dictionary<string, string> Map = LoadMap();
+    private static readonly Regex InternalId = new(@"^(Crossroads|Fungus\d*|Mines|Ruins|Deepnest|Abyss|RestingGrounds|City|Waterways|Cliffs|Grimm|Hive|KingsPass|Dream)\w*[_-]\d+$", RegexOptions.Compiled);
 
-    private static readonly Regex InternalId = new(@"^(Crossroads|Fungus|Mines|Ruins|Deepnest|Abyss|RestingGrounds|City|Waterways|Cliffs|Grimm|Hive|KingsPass|Dream)\w*[_-]\d+$", RegexOptions.Compiled);
+    private static Dictionary<string, string> LoadMap()
+    {
+        var assembly = Assembly.GetExecutingAssembly();
+        using var stream = assembly.GetManifestResourceStream("CabbyCodesTranslator.translations.zh-CN.json");
+        if (stream is null) return new Dictionary<string, string>(StringComparer.Ordinal);
+        using var reader = new StreamReader(stream);
+        return JsonSerializer.Deserialize<Dictionary<string, string>>(reader.ReadToEnd())
+            ?? new Dictionary<string, string>(StringComparer.Ordinal);
+    }
 
     public static TranslationResult Translate(string input, string output)
     {
-        if (!System.IO.File.Exists(input)) throw new System.IO.FileNotFoundException("找不到 DLL", input);
+        if (!File.Exists(input)) throw new FileNotFoundException("找不到 DLL", input);
         var module = ModuleDefMD.Load(input);
         int scanned = 0, replaced = 0;
         try
@@ -46,10 +43,8 @@ public static class Translator
     {
         foreach (var f in type.Fields)
         {
-            if (f.HasConstant && f.Constant?.Value is string)
-                scanned++;
+            if (f.HasConstant && f.Constant?.Value is string) scanned++;
         }
-
         foreach (var m in type.Methods)
         {
             if (!m.HasBody) continue;
@@ -69,7 +64,6 @@ public static class Translator
     {
         translated = s;
         if (string.IsNullOrWhiteSpace(s) || InternalId.IsMatch(s)) return false;
-        if (Map.TryGetValue(s, out translated)) return true;
-        return false;
+        return Map.TryGetValue(s, out translated);
     }
 }
