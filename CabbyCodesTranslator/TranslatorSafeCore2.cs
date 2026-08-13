@@ -1,1 +1,0 @@
-safe-ui-translation-core
