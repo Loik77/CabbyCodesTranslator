@@ -1,0 +1,1 @@
+Expanded Chinese vocabulary is maintained in the translator source and translation data. It covers the main CabbyCodes/CabbyMenu UI categories, common controls, popups, settings, player stats, inventory, maps, teleport, achievements, and developer options. Internal identifiers are kept unchanged.
