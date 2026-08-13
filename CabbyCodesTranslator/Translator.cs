@@ -46,12 +46,10 @@ public static class Translator
     {
         foreach (var f in type.Fields)
         {
-            if (f.HasConstant && f.Constant?.Value is string s)
-            {
+            if (f.HasConstant && f.Constant?.Value is string)
                 scanned++;
-                if (TryTranslate(s, out var t)) { f.Constant = new Constant(t); replaced++; }
-            }
         }
+
         foreach (var m in type.Methods)
         {
             if (!m.HasBody) continue;
