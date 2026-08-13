@@ -2,8 +2,6 @@ using dnlib.DotNet;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Reflection;
-using System.Text.Json;
 using System.Text.RegularExpressions;
 
 namespace CabbyCodesTranslator;
@@ -12,18 +10,8 @@ public readonly record struct TranslationResult(int Scanned, int Replaced);
 
 public static class Translator
 {
-    private static readonly Dictionary<string, string> Map = LoadMap();
+    private static readonly Dictionary<string, string> Map = TranslationCatalog.Load();
     private static readonly Regex InternalId = new(@"^(Crossroads|Fungus\d*|Mines|Ruins|Deepnest|Abyss|RestingGrounds|City|Waterways|Cliffs|Grimm|Hive|KingsPass|Dream)\w*[_-]\d+$", RegexOptions.Compiled);
-
-    private static Dictionary<string, string> LoadMap()
-    {
-        var assembly = Assembly.GetExecutingAssembly();
-        using var stream = assembly.GetManifestResourceStream("CabbyCodesTranslator.translations.zh-CN.json");
-        if (stream is null) return new Dictionary<string, string>(StringComparer.Ordinal);
-        using var reader = new StreamReader(stream);
-        return JsonSerializer.Deserialize<Dictionary<string, string>>(reader.ReadToEnd())
-            ?? new Dictionary<string, string>(StringComparer.Ordinal);
-    }
 
     public static TranslationResult Translate(string input, string output)
     {
