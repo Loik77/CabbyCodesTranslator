@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
     <TargetFramework>net8.0-windows</TargetFramework>
@@ -13,5 +13,6 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="dnlib" Version="4.5.0" />
+    <EmbeddedResource Include="translations/zh-CN.json" LogicalName="CabbyCodesTranslator.translations.zh-CN.json" />
   </ItemGroup>
 </Project>
