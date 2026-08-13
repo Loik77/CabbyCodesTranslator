@@ -89,8 +89,8 @@ public static class Translator
             var operand = instructions[j].Operand;
             string? methodName = operand switch
             {
-                IMethod m => m.Name,
                 MethodSpec ms => ms.Method?.Name,
+                IMethod m => m.Name,
                 _ => null
             };
 
@@ -99,8 +99,8 @@ public static class Translator
 
             var fullName = operand switch
             {
-                IMethod m => m.FullName,
                 MethodSpec ms => ms.Method?.FullName ?? string.Empty,
+                IMethod m => m.FullName,
                 _ => string.Empty
             };
 
