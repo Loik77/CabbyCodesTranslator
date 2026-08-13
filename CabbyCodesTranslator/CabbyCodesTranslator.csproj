@@ -14,5 +14,9 @@
   <ItemGroup>
     <PackageReference Include="dnlib" Version="4.5.0" />
     <EmbeddedResource Include="translations/zh-CN.json" LogicalName="CabbyCodesTranslator.translations.zh-CN.json" />
+    <Content Include="translations/zh-CN.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
   </ItemGroup>
 </Project>
