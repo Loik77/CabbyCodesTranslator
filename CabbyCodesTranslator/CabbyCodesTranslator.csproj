@@ -8,6 +8,8 @@
     <Platforms>x64</Platforms>
     <AssemblyName>CabbyCodesTranslator</AssemblyName>
     <RootNamespace>CabbyCodesTranslator</RootNamespace>
+    <SelfContained>true</SelfContained>
+    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="dnlib" Version="4.5.0" />
